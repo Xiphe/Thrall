@@ -1,0 +1,25 @@
+{
+  "name": "thrall",
+  "version": "0.0.0",
+  "description": "Grunt tasks orchestrator/warchief",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "keywords": [
+    "grunt",
+    "collection",
+    "orchestration",
+    "tasks"
+  ],
+  "author": "Hannes Diercks <github@xiphe.net>",
+  "license": "MIT",
+  "dependencies": {
+    "di": "0.0.1",
+    "findup-sync": "^0.2.1",
+    "glob": "^5.0.6",
+    "install": "^0.1.8",
+    "lodash": "^3.8.0",
+    "npm": "^2.9.1"
+  }
+}
