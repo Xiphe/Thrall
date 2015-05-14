@@ -1,0 +1,12 @@
+{
+	"extends": "../.jshintrc",
+	"mocha": true,
+	"expr": true,
+	"maxstatements" : 15,
+	"predef": [
+		"expect",
+		"sinon",
+		"getStub",
+		"lib"
+	]
+}
