@@ -2,7 +2,7 @@
   "name": "thrall",
   "version": "0.0.0",
   "description": "Grunt tasks orchestrator/warchief",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "grunt test"
   },
