@@ -1,15 +1,20 @@
-module.exports = function(grunt) {
-  'use strict';
+'use strict';
 
+function initConfig(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    srcFiles: 'lib/*.js',
+    testFiles: [
+      'test/*.js',
+      'test/lib/*.js'
+    ],
     env: {
       coverage: {
         COVERAGE_DIR: '.tmp/coverage/instrument/lib'
       }
     },
     instrument: {
-      files: 'lib/*.js',
+      files: '<%= srcFiles %>',
       options: {
         lazy: true,
         basePath: '.tmp/coverage/instrument/'
@@ -19,10 +24,7 @@ module.exports = function(grunt) {
       options: {
         reporter: 'spec'
       },
-      src: [
-        'test/*.js',
-        'test/lib/*.js'
-      ]
+      src: '<%= testFiles %>'
     },
     storeCoverage: {
       options: {
@@ -40,27 +42,53 @@ module.exports = function(grunt) {
     watch: {
       test: {
         files: [
-          '<%= instrument.files %>',
-          '<%= mochaTest.src %>'
+          '<%= srcFiles %>',
+          '<%= testFiles %>'
         ],
-        tasks: ['_test'],
+        tasks: ['run-tests'],
       }
+    },
+    jscs: {
+      src: [
+        '<%= srcFiles %>',
+        '<%= testFiles %>',
+        'gruntfile.js',
+      ]
+    },
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      src: '<%= jscs.src %>'
     }
   });
+}
 
-  require('load-grunt-tasks')(grunt);
+function registerTasks(grunt) {
+  var argv = require('minimist')(process.argv.slice(2));
 
-  grunt.registerTask('_test', [
+  var runTestTask = [];
+  if (argv.all) {
+    runTestTask.push('jshint', 'jscs');
+  }
+  runTestTask.push(
     'env:coverage',
     'instrument',
     'mochaTest',
     'storeCoverage',
     'makeReport'
-  ]);
+  );
+  grunt.registerTask('run-tests', runTestTask);
 
-  var testTasks = ['_test'];
-  if (grunt.option('watch')) {
-    testTasks.push('watch:test');
+  var testTask = ['run-tests'];
+  if (argv.watch) {
+    testTask.push('watch:test');
   }
-  grunt.registerTask('test', testTasks);
+  grunt.registerTask('test', testTask);
+}
+
+module.exports = function(grunt) {
+  require('load-grunt-tasks')(grunt);
+  initConfig(grunt);
+  registerTasks(grunt);
 };
