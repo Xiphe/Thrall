@@ -51,6 +51,7 @@ describe('module', function() {
         'baseInjector',
         'thrallConfig',
         'registerSubtasks',
+        'loadSubConfigs',
         'addTasks',
         'task',
         'init'
