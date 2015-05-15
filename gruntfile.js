@@ -35,7 +35,7 @@ function initConfig(grunt) {
       src: '.tmp/coverage/reports/**/*.json',
       options: {
         type: 'lcov',
-        dir: '.tmp/coverage/reports',
+        dir: '.tmp/coverage/reports/',
         print: 'detail'
       }
     },
@@ -60,6 +60,12 @@ function initConfig(grunt) {
         jshintrc: true
       },
       src: '<%= jscs.src %>'
+    },
+    codeclimate: {
+      options: {
+        file: '<%= makeReport.options.dir %>lcov.info',
+        token: process.env.THRALL_CODE_CLIMATE_TOKEN
+      }
     }
   });
 }

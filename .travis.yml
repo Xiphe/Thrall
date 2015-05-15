@@ -1,0 +1,18 @@
+language: node_js
+
+sudo: false
+
+env:
+  - secure: "CA+CLw1YTAE2uTPdJp3+R0ZYNN/rD22W6FICCcP3+fk318QsrkMYtfaJ0xNhQO9YuJY+c7fsNCIOr1jjPl0Jfn0jay9SvVuIOhTZliMT7vM6H4GRR34kOYh9akKMaOlTNqXezryxkxvVBZndu7h8tLgrMwQ/g/kKVp9REjWMxdiAxG0PO0UU1CgzV2HVfTEc4FwS7goi8rFmhtCdd/2c5QHdi/zbfKvL1LamWjwF5qALnDiaS/6KIh8/U6Ww5Wdi11p/+Ycye80xqdSgKl85Yaed+EdtxVPqSvKA6KAJ0jjKQp5KYfMvj/9tR+d4IXyEKIxS0hitIhHLdL7WN1aJAy3A0ap2WsM7Yy3wy/EE+GLjOedTDHG58dxJt01urr4S0wBpFL6mBEYebez+JGChqtuAinnvFBQEmmZ2bglcmwHO02YysYMvhRmqNBJBKAltP5BaWDECOCp1Y3cX7O30hac2sBzqylrR0W/OPFAnNjQnObLmKNFVl8dpIgtUgDTxgboQpvuXqqe5D3YJWp09yR7Xj8N1esgFQ0utOd+1O01RRJvb2a4hkXOYtzj7KMlFb9UIIjT8OEaBKScn7AyPUY6hjjk7pEVwg4g6J3Jnghj/trvTG2vxlDKQbk8w+NOwck/IFQJXN9cSKaPZVnRzRhnLAKs2iGFeVilT+hvyCNE="
+
+node_js:
+  - '0.10'
+
+install:
+  - npm install
+
+script:
+  - grunt test --all
+
+after_success:
+  - grunt codeclimate
