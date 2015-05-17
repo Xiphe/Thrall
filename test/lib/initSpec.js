@@ -107,6 +107,21 @@ describe('init', function() {
       expect(called).to.equal(1);
     });
 
+    it(
+      'should provide a helper to manipulate config after merge',
+      function(done) {
+        validThrallConfig.defaults = function(merged) {
+          merged(function(config) {
+            expect(config).to.deep.equal(userConfig);
+            done();
+          });
+
+          return {};
+        };
+        doInit();
+      }
+    );
+
     it('should merge user config with defaults', function() {
       var name = 'verry-special';
       validThrallConfig.name = name;
