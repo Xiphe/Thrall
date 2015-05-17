@@ -27,6 +27,9 @@ describe('task', function() {
     fakeLoadSubConfigs = function() {};
     validThrallConfig = {};
     fakeGrunt = {
+      config: {
+        set: function() {}
+      },
       verbose: {
         subhead: function() { return fakeGrunt.verbose; },
         writeln: function() { return fakeGrunt.verbose; },
@@ -101,5 +104,33 @@ describe('task', function() {
       'foo:bar',
       'fuchs:after'
     ]);
+  });
+
+  it('should apply environment variables if configured', function() {
+    sinon.spy(fakeGrunt.config, 'set');
+    var previousFoo = process.env.FOO;
+    var FOO_VAR = 'hase';
+    process.env.FOO = FOO_VAR;
+    taskConfig.env = {
+      FOO: 'foo.bar'
+    };
+    getTask()('fuchs', taskConfig);
+    expect(fakeGrunt.config.set).to.have.been.calledWith(
+      'foo.bar',
+      FOO_VAR
+    );
+    process.env.FOO = previousFoo;
+  });
+
+  it('should not apply undefined environment variables', function() {
+    sinon.spy(fakeGrunt.config, 'set');
+    var previousFoo = process.env.FOO;
+    delete process.env.FOO;
+    taskConfig.env = {
+      FOO: 'foo.bar'
+    };
+    getTask()('fuchs', taskConfig);
+    expect(fakeGrunt.config.set).not.to.have.been.called;
+    process.env.FOO = previousFoo;
   });
 });
