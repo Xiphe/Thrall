@@ -1,4 +1,4 @@
-describe('task', function() {
+describe('task', function() { // jshint ignore: line
   'use strict';
 
   var di = require('di');
@@ -6,12 +6,14 @@ describe('task', function() {
   var fakeGrunt;
   var fakeLoadSubConfigs;
   var taskConfig;
+  var fakeCliOptions;
 
   function getInjector() {
     return new di.Injector([{
       thrallConfig: ['value', validThrallConfig],
       grunt: ['value', fakeGrunt],
       loadSubConfigs: ['value', fakeLoadSubConfigs],
+      cliOptions: ['value', fakeCliOptions],
       _: ['value', require('lodash')]
     }]);
   }
@@ -21,6 +23,7 @@ describe('task', function() {
   }
 
   beforeEach(function() {
+    fakeCliOptions = {};
     taskConfig = {
       run: ['foo:bar']
     };
@@ -132,5 +135,30 @@ describe('task', function() {
     getTask()('fuchs', taskConfig);
     expect(fakeGrunt.config.set).not.to.have.been.called;
     process.env.FOO = previousFoo;
+  });
+
+  it('should apply CLI options if configured', function() {
+    sinon.spy(fakeGrunt.config, 'set');
+    var barOption = 'igel';
+    var configPath = 'foo.bar';
+    taskConfig.options = {
+      bar: configPath
+    };
+    fakeCliOptions.bar = barOption;
+    getTask()('fuchs', taskConfig);
+    expect(fakeGrunt.config.set).to.have.been.calledWith(
+      configPath,
+      barOption
+    );
+  });
+
+  it('should not apply undefined CLI options', function() {
+    sinon.spy(fakeGrunt.config, 'set');
+    var configPath = 'foo.bar';
+    taskConfig.options = {
+      bar: configPath
+    };
+    getTask()('fuchs', taskConfig);
+    expect(fakeGrunt.config.set).not.to.have.been.called;
   });
 });
