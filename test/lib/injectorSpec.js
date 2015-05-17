@@ -30,6 +30,7 @@ describe('injector', function() {
         'findupSync',
         'fs',
         'glob',
+        'getobject',
         'grunt',
         'path'
       );
