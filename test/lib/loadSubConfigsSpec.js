@@ -14,6 +14,7 @@ describe('load sub configs', function() { // jshint ignore: line
       thrallConfig: ['value', validThrallConfig],
       grunt: ['value', fakeGrunt],
       path: ['value', require('path')],
+      getobject: ['value', require('getobject')],
       _: ['value', require('lodash')]
     }]);
   }
@@ -36,6 +37,9 @@ describe('load sub configs', function() { // jshint ignore: line
     fakeGrunt = {
       config: {
         merge: function() {}
+      },
+      verbose: {
+        warn: function() {}
       }
     };
   });
@@ -49,13 +53,32 @@ describe('load sub configs', function() { // jshint ignore: line
   });
 
   it('should throw if subtask could not be loaded', function() {
-    sinon.stub(childInjector, 'invoke').throws();
+    subconfigFactory = sinon.stub().throws();
 
     expect(function() {
       getLoadSubConfigs({
         'subtasks/foo/bar': subconfigFactory
       })(['foo:bar'], childInjector);
     }).to.throw(Error);
+  });
+
+  it('should load parent config if subtask could not be loaded', function() {
+    sinon.spy(fakeGrunt.config, 'merge');
+    subconfigFactory = sinon.stub().throws();
+    var fooSubConfig = {lorem: 'ipsum'};
+    function fooSubconfigFactory() {
+      return fooSubConfig;
+    }
+    fooSubconfigFactory['@noCallThru'] = true;
+
+    getLoadSubConfigs({
+      'subtasks/foo/bar': subconfigFactory,
+      'subtasks/foo': fooSubconfigFactory
+    })(['foo:bar'], childInjector);
+
+    expect(fakeGrunt.config.merge).to.have.been.calledWith(
+      {foo: fooSubConfig}
+    );
   });
 
   it('should load and merge sub configs', function() {
