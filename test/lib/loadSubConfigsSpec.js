@@ -35,13 +35,12 @@ describe('load sub configs', function() { // jshint ignore: line
       dir: './'
     };
     fakeGrunt = {
-      config: {
-        merge: function() {}
-      },
+      config: sinon.stub(),
       verbose: {
         warn: function() {}
       }
     };
+    fakeGrunt.config.merge = function() {};
   });
 
   it('should export a factory', function() {
@@ -106,6 +105,12 @@ describe('load sub configs', function() { // jshint ignore: line
     expect(fakeGrunt.config.merge.callCount).to.equal(1);
   });
 
+  it('should not load falsely configs', function() {
+    sinon.stub(fakeGrunt.config, 'merge');
+    getLoadSubConfigs()([undefined], childInjector);
+    expect(fakeGrunt.config.merge).not.to.have.been.called;
+  });
+
   it('should merge configs of nested tasks', function() {
     subconfig = ['concurrent:bar'];
     var concurrentSubconfig = {tasks: ['lorem:ipsum']};
@@ -126,6 +131,18 @@ describe('load sub configs', function() { // jshint ignore: line
 
     expect(fakeGrunt.config.merge).to.have.been.calledWith(
       {lorem: {ipsum: loremSubconfig}}
+    );
+  });
+
+  it('should load tasks from runIf blocks', function() {
+    sinon.spy(fakeGrunt.config, 'merge');
+    fakeGrunt.config.returns(true);
+    var loadSubConfigs = getLoadSubConfigs({
+      'subtasks/foo/bar': subconfigFactory
+    });
+    loadSubConfigs([{if: 'bla', task: 'foo:bar'}], childInjector);
+    expect(fakeGrunt.config.merge).to.have.been.calledWith(
+      {foo: {bar: subconfig}}
     );
   });
 });

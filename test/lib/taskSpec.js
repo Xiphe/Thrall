@@ -30,9 +30,7 @@ describe('task', function() { // jshint ignore: line
     fakeLoadSubConfigs = function() {};
     validThrallConfig = {};
     fakeGrunt = {
-      config: {
-        set: function() {}
-      },
+      config: function() {},
       verbose: {
         subhead: function() { return fakeGrunt.verbose; },
         writeln: function() { return fakeGrunt.verbose; },
@@ -43,6 +41,7 @@ describe('task', function() { // jshint ignore: line
         run: sinon.spy()
       }
     };
+    fakeGrunt.config.set = function() {};
   });
 
   it('should export a factory', function() {
@@ -160,5 +159,33 @@ describe('task', function() { // jshint ignore: line
     };
     getTask()('fuchs', taskConfig);
     expect(fakeGrunt.config.set).not.to.have.been.called;
+  });
+
+  it('should include or exclude tasks base on config', function() {
+    var config = {
+      'run.bc': true,
+      'run.d': false
+    };
+    fakeGrunt.config = function(key) {
+      return config[key];
+    };
+    taskConfig = {
+      run: [
+        'foo:bar',
+        {task: 'a'},
+        {if: 'run.bc', task: ['b', 'c']},
+        {if: 'run.d', task: 'd'},
+      ]
+    };
+    getTask()('fuchs', taskConfig);
+    fakeGrunt.registerTask.getCall(2).args[2]();
+    expect(fakeGrunt.task.run).to.have.been.calledWith([
+      'fuchs:before',
+      'foo:bar',
+      'a',
+      'b',
+      'c',
+      'fuchs:after',
+    ]);
   });
 });
