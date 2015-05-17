@@ -27,6 +27,7 @@ describe('injector', function() {
         FakeInjector.getCall(0).args[0][0]
       ).to.have.all.keys(
         '_',
+        'cliOptions',
         'findupSync',
         'fs',
         'glob',
