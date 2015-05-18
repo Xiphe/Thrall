@@ -48,6 +48,7 @@ describe('module', function() {
       expect(
         fakeInjector.createChild.getCall(0).args[0][0]
       ).to.have.all.keys(
+        'applyTaskOptions',
         'baseInjector',
         'thrallConfig',
         'registerSubtasks',
