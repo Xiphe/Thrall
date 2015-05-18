@@ -133,6 +133,7 @@ describe('task', function() { // jshint ignore: line
         {task: 'a'},
         {if: 'run.bc', task: ['b', 'c']},
         {if: 'run.d', task: 'd'},
+        {if: 'run.e', task: 'e', else: 'f'},
       ]
     };
     getTask()('fuchs', taskConfig);
@@ -143,6 +144,7 @@ describe('task', function() { // jshint ignore: line
       'a',
       'b',
       'c',
+      'f',
       'fuchs:after',
     ]);
   });
