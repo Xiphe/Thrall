@@ -6,14 +6,14 @@ describe('task', function() { // jshint ignore: line
   var fakeGrunt;
   var fakeLoadSubConfigs;
   var taskConfig;
-  var fakeCliOptions;
+  var fakeApplyTaskOptions;
 
   function getInjector() {
     return new di.Injector([{
       thrallConfig: ['value', validThrallConfig],
       grunt: ['value', fakeGrunt],
       loadSubConfigs: ['value', fakeLoadSubConfigs],
-      cliOptions: ['value', fakeCliOptions],
+      applyTaskOptions: ['value', fakeApplyTaskOptions],
       _: ['value', require('lodash')]
     }]);
   }
@@ -23,10 +23,10 @@ describe('task', function() { // jshint ignore: line
   }
 
   beforeEach(function() {
-    fakeCliOptions = {};
     taskConfig = {
       run: ['foo:bar']
     };
+    fakeApplyTaskOptions = function() {};
     fakeLoadSubConfigs = function() {};
     validThrallConfig = {};
     fakeGrunt = {
@@ -41,7 +41,6 @@ describe('task', function() { // jshint ignore: line
         run: sinon.spy()
       }
     };
-    fakeGrunt.config.set = function() {};
   });
 
   it('should export a factory', function() {
@@ -108,57 +107,16 @@ describe('task', function() { // jshint ignore: line
     ]);
   });
 
-  it('should apply environment variables if configured', function() {
-    sinon.spy(fakeGrunt.config, 'set');
-    var previousFoo = process.env.FOO;
-    var FOO_VAR = 'hase';
-    process.env.FOO = FOO_VAR;
-    taskConfig.env = {
-      FOO: 'foo.bar'
+  it('should apply CLI options before configuring subtasks', function() {
+    var callOrder = [];
+    fakeApplyTaskOptions = function() {
+      callOrder.push('applyTaskOptions');
+    };
+    fakeLoadSubConfigs = function() {
+      callOrder.push('loadSubConfigs');
     };
     getTask()('fuchs', taskConfig);
-    expect(fakeGrunt.config.set).to.have.been.calledWith(
-      'foo.bar',
-      FOO_VAR
-    );
-    process.env.FOO = previousFoo;
-  });
-
-  it('should not apply undefined environment variables', function() {
-    sinon.spy(fakeGrunt.config, 'set');
-    var previousFoo = process.env.FOO;
-    delete process.env.FOO;
-    taskConfig.env = {
-      FOO: 'foo.bar'
-    };
-    getTask()('fuchs', taskConfig);
-    expect(fakeGrunt.config.set).not.to.have.been.called;
-    process.env.FOO = previousFoo;
-  });
-
-  it('should apply CLI options if configured', function() {
-    sinon.spy(fakeGrunt.config, 'set');
-    var barOption = 'igel';
-    var configPath = 'foo.bar';
-    taskConfig.options = {
-      bar: configPath
-    };
-    fakeCliOptions.bar = barOption;
-    getTask()('fuchs', taskConfig);
-    expect(fakeGrunt.config.set).to.have.been.calledWith(
-      configPath,
-      barOption
-    );
-  });
-
-  it('should not apply undefined CLI options', function() {
-    sinon.spy(fakeGrunt.config, 'set');
-    var configPath = 'foo.bar';
-    taskConfig.options = {
-      bar: configPath
-    };
-    getTask()('fuchs', taskConfig);
-    expect(fakeGrunt.config.set).not.to.have.been.called;
+    expect(callOrder).to.deep.equal(['applyTaskOptions', 'loadSubConfigs']);
   });
 
   it('should include or exclude tasks base on config', function() {
