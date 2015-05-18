@@ -77,15 +77,6 @@ describe('task', function() { // jshint ignore: line
     );
   });
 
-  it('should take name from config if available', function() {
-    var name = 'dackel';
-    taskConfig.name = name;
-    getTask()('hase', taskConfig);
-    expect(fakeGrunt.registerTask).to.have.been.calledWith(
-      name
-    );
-  });
-
   it('should register hooks', function() {
     var name = 'igel';
     getTask()(name, taskConfig);
