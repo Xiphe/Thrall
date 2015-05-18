@@ -102,6 +102,34 @@ describe('add tasks', function() { // jshint ignore: line
     expect(names).to.have.members(config.tasks);
   });
 
+  it('should be callable with a specific task', function(done) {
+    var taskName = 'foobar';
+    taskFactory = function(name) {
+      expect(name).to.equal(taskName);
+      done();
+    };
+    getAddTasks({
+      'tasks/foobar': taskConfigFactory,
+    })([taskName]);
+  });
+
+  it('should not initiate the same task twice', function() {
+    var taskName = 'barfoos';
+    var names = [];
+    taskFactory = function(name) {
+      names.push(name);
+    };
+
+    var addTasks = getAddTasks({
+      'tasks/barfoos': taskConfigFactory,
+    });
+
+    addTasks([taskName]);
+    addTasks([taskName]);
+
+    expect(names).to.deep.equal([taskName]);
+  });
+
   it('should invoke taskFactory with loaded config', function(done) {
     taskFactory = function(name, config) {
       expect(name).to.equal('bar');
