@@ -136,18 +136,18 @@ describe('add tasks', function() { // jshint ignore: line
     });
 
     it('should find all tasks in taskDir', function() {
-      var taskFiles = ['path/to/yo.js', 'path/to/lo.js'];
+      var taskFiles = ['tasks/to/yo.js', 'tasks/lo.js'];
       var names = [];
       sinon.stub(fakeGlob, 'sync').returns(taskFiles);
       taskFactory = function(name) {
         names.push(name);
       };
       getAddTasks({
-        'tasks/yo': taskConfigFactory,
+        'tasks/to/yo': taskConfigFactory,
         'tasks/lo': taskConfigFactory,
       })();
       expect(fakeGlob.sync).to.have.been.called;
-      expect(names).to.have.members(['yo', 'lo']);
+      expect(names).to.have.members(['to:yo', 'lo']);
     });
   });
 
