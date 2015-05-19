@@ -2,8 +2,8 @@ Thrall
 ======
 
 [![Build Status](https://travis-ci.org/Xiphe/Thrall.svg?branch=master)](https://travis-ci.org/Xiphe/Thrall)
-[![Code Climate](https://codeclimate.com/repos/555b07d9e30ba03664005338/badges/111c0faa32cb523aa2cc/gpa.svg)](https://codeclimate.com/repos/555b07d9e30ba03664005338/feed)
-[![Test Coverage](https://codeclimate.com/repos/555b07d9e30ba03664005338/badges/111c0faa32cb523aa2cc/coverage.svg)](https://codeclimate.com/repos/555b07d9e30ba03664005338/coverage)
+[![Code Climate](https://codeclimate.com/github/Xiphe/Thrall/badges/gpa.svg)](https://codeclimate.com/github/Xiphe/Thrall)
+[![Test Coverage](https://codeclimate.com/github/Xiphe/Thrall/badges/coverage.svg)](https://codeclimate.com/github/Xiphe/Thrall/coverage)
 [![Dependency Status](https://david-dm.org/Xiphe/Thrall.svg)](https://david-dm.org/Xiphe/Thrall)
 
 Grunt task orchestrator/warchief
