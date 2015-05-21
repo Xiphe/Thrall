@@ -139,4 +139,46 @@ describe('task', function() { // jshint ignore: line
       'fuchs:after',
     ]);
   });
+
+  it('should allow array of ifs in runIf', function() {
+    var config = {
+      'run.a': true,
+      'run.b': false,
+      'run.c': true,
+    };
+    fakeGrunt.config = function(key) {
+      return config[key];
+    };
+    taskConfig = {
+      run: [
+        {if: ['run.a', 'run.b'], task: ['a']},
+        {if: ['run.a', 'run.c'], task: ['b']},
+        {if: ['run.b', 'run.c'], task: ['d']}
+      ]
+    };
+    getTask()('fuchs', taskConfig);
+    fakeGrunt.registerTask.getCall(2).args[2]();
+    expect(fakeGrunt.task.run).to.have.been.calledWith([
+      'fuchs:before',
+      'b',
+      'fuchs:after',
+    ]);
+  });
+
+  it('should allow booleans for runIf blocks', function() {
+    taskConfig = {
+      run: [
+        {if: true, task: ['a']},
+        {if: [true, false], task: ['b']},
+        {if: false, task: ['d']}
+      ]
+    };
+    getTask()('fuchs', taskConfig);
+    fakeGrunt.registerTask.getCall(2).args[2]();
+    expect(fakeGrunt.task.run).to.have.been.calledWith([
+      'fuchs:before',
+      'a',
+      'fuchs:after',
+    ]);
+  });
 });
