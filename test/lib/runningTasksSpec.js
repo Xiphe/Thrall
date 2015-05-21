@@ -32,7 +32,7 @@ describe('runningTasks', function() {
   });
 
   it('should push tasks to list', function() {
-    runningTasks.set('foo:bar');
+    runningTasks.push('foo:bar');
     expect(process.env[envKey]).to.equal('foo:bar');
   });
 });
