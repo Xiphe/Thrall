@@ -11,6 +11,7 @@ describe('add tasks', function() { // jshint ignore: line
   var fakeGlob;
   var taskConfig;
   var taskConfigFactory;
+  var fakeRunningTasks;
 
   function getAddTasks(proxyquireConfig) {
     return getInjector().invoke(proxyquire(
@@ -27,11 +28,15 @@ describe('add tasks', function() { // jshint ignore: line
       path: ['value', path],
       grunt: ['value', fakeGrunt],
       glob: ['value', fakeGlob],
+      runningTasks: ['value', fakeRunningTasks],
       _: ['value', require('lodash')]
     }]);
   }
 
   beforeEach(function() {
+    fakeRunningTasks = {
+      get: function() { return []; }
+    };
     fakeGlob = {
       sync: function() {}
     };
@@ -134,6 +139,19 @@ describe('add tasks', function() { // jshint ignore: line
     taskFactory = function(name, config) {
       expect(name).to.equal('bar');
       expect(config).to.equal(taskConfig);
+      done();
+    };
+
+    getAddTasks({
+      'tasks/bar': taskConfigFactory
+    })();
+  });
+
+  it('should provide the rootTask to taskConfig', function(done) {
+    var someRunningTask = 'foo:hase';
+    fakeRunningTasks.get = function() { return [someRunningTask, 'tue:tue']; };
+    taskFactory = function(rootTask) {
+      expect(rootTask).to.equal(someRunningTask);
       done();
     };
 
