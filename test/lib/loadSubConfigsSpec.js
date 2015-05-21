@@ -6,16 +6,20 @@ describe('load sub configs', function() { // jshint ignore: line
   var validThrallConfig;
   var fakeGrunt;
   var subconfig;
+  var fakeGlob;
   var subconfigFactory;
   var childInjector;
+  var fakeAddTasks;
 
   function getInjector() {
     return new di.Injector([{
       thrallConfig: ['value', validThrallConfig],
       grunt: ['value', fakeGrunt],
+      addTasks: ['value', fakeAddTasks],
       path: ['value', require('path')],
+      glob: ['value', fakeGlob],
       getobject: ['value', require('getobject')],
-      _: ['value', require('lodash')]
+      _: ['value', require('lodash')],
     }]);
   }
 
@@ -27,6 +31,8 @@ describe('load sub configs', function() { // jshint ignore: line
   }
 
   beforeEach(function() {
+    fakeAddTasks = sinon.spy();
+    fakeAddTasks.TASKS_DIR = 'tasks';
     subconfig = {lorem: 'ipsum'};
     subconfigFactory = function() { return subconfig; };
     subconfigFactory['@noCallThru'] = true;
@@ -39,6 +45,9 @@ describe('load sub configs', function() { // jshint ignore: line
       verbose: {
         warn: function() {}
       }
+    };
+    fakeGlob = {
+      sync: function() { return false; }
     };
     fakeGrunt.config.merge = function() {};
   });
@@ -145,4 +154,24 @@ describe('load sub configs', function() { // jshint ignore: line
       {foo: {bar: subconfig}}
     );
   });
+
+  it('should check if subtask is a maintask', function() {
+    sinon.spy(fakeGlob, 'sync');
+    getLoadSubConfigs({
+      'subtasks/foo/bar': subconfigFactory
+    })(['foo:bar'], childInjector);
+    expect(fakeGlob.sync).to.have.been.calledWith('tasks/foo/bar.+(js|coffee)');
+  });
+
+  it(
+    'should load the main task instead of subtasksConfig when found',
+    function() {
+      var taskname = 'foo:bar';
+      sinon.stub(fakeGlob, 'sync').returns(['tasks/foo/bar.js']);
+      getLoadSubConfigs({
+        'tasks/foo/bar': subconfigFactory
+      })([taskname], childInjector);
+      expect(fakeAddTasks).to.have.been.calledWith([taskname]);
+    }
+  );
 });
