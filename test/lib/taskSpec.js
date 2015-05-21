@@ -7,12 +7,14 @@ describe('task', function() { // jshint ignore: line
   var fakeLoadSubConfigs;
   var taskConfig;
   var fakeApplyTaskOptions;
+  var fakeRunningTasks;
 
   function getInjector() {
     return new di.Injector([{
       thrallConfig: ['value', validThrallConfig],
       grunt: ['value', fakeGrunt],
       loadSubConfigs: ['value', fakeLoadSubConfigs],
+      runningTasks: ['value', fakeRunningTasks],
       applyTaskOptions: ['value', fakeApplyTaskOptions],
       _: ['value', require('lodash')]
     }]);
@@ -23,6 +25,9 @@ describe('task', function() { // jshint ignore: line
   }
 
   beforeEach(function() {
+    fakeRunningTasks = {
+      push: function() {}
+    };
     taskConfig = {
       run: ['foo:bar']
     };
@@ -96,6 +101,13 @@ describe('task', function() { // jshint ignore: line
       'foo:bar',
       'fuchs:after'
     ]);
+  });
+
+  it('should the push a task to runningTasks when executed', function() {
+    sinon.spy(fakeRunningTasks, 'push');
+    getTask()('fuchs', taskConfig);
+    fakeGrunt.registerTask.getCall(2).args[2]();
+    expect(fakeRunningTasks.push).to.have.been.calledWith('fuchs');
   });
 
   it('should apply CLI options before configuring subtasks', function() {
