@@ -75,7 +75,7 @@ describe('apply task options', function() {
     expect(fakeGrunt.config.set).not.to.have.been.called;
   });
 
-  it('should convert arrays', function() {
+  it('should convert strings to arrays', function() {
     var configPath = 'foo.bar';
     var options = {
       bar: {
@@ -89,6 +89,23 @@ describe('apply task options', function() {
     expect(fakeGrunt.config.set).to.have.been.calledWith(
       configPath,
       ['hase', 'igel']
+    );
+  });
+
+  it('should not convert non-strings to arrays', function() {
+    var configPath = 'foo.bar';
+    var options = {
+      bar: {
+        type: 'array',
+        key: configPath
+      }
+    };
+    fakeCliOptions.bar = false;
+
+    getApplyTaskOptions()(options);
+    expect(fakeGrunt.config.set).to.have.been.calledWith(
+      configPath,
+      false
     );
   });
 
