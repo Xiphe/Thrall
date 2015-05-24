@@ -33,7 +33,9 @@ describe('injector', function() {
         'glob',
         'getobject',
         'grunt',
-        'path'
+        'path',
+        'del',
+        'mkdirp'
       );
   });
 });
