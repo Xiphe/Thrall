@@ -92,7 +92,7 @@ describe('init', function() {
       sinon.stub(fakeGrunt, 'config');
       sinon.stub(fakeGrunt.config, 'set');
       fakeGrunt.config.returns(userConfig);
-      validThrallConfig.defaults = function() {
+      validThrallConfig.getDefaults = function() {
         return defaults;
       };
     });
@@ -100,7 +100,7 @@ describe('init', function() {
     it('should invoke defaults if present', function() {
       /* can not use a spy here due to dependency injection */
       var called = 0;
-      validThrallConfig.defaults = function() {
+      validThrallConfig.getDefaults = function() {
         called += 1;
       };
       doInit();
@@ -110,7 +110,7 @@ describe('init', function() {
     it(
       'should provide a helper to manipulate config after merge',
       function(done) {
-        validThrallConfig.defaults = function(merged) {
+        validThrallConfig.getDefaults = function(merged) {
           merged(function(config) {
             expect(config).to.deep.equal(userConfig);
             done();
