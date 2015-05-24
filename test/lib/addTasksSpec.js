@@ -12,6 +12,7 @@ describe('add tasks', function() { // jshint ignore: line
   var taskConfig;
   var taskConfigFactory;
   var fakeRunningTasks;
+  var fakeCliOptions;
 
   function getAddTasks(proxyquireConfig) {
     return getInjector().invoke(proxyquire(
@@ -28,12 +29,16 @@ describe('add tasks', function() { // jshint ignore: line
       path: ['value', path],
       grunt: ['value', fakeGrunt],
       glob: ['value', fakeGlob],
+      cliOptions: ['value', fakeCliOptions],
       runningTasks: ['value', fakeRunningTasks],
       _: ['value', require('lodash')]
     }]);
   }
 
   beforeEach(function() {
+    fakeCliOptions = {
+      _: []
+    };
     fakeRunningTasks = {
       get: function() { return []; }
     };
@@ -159,6 +164,21 @@ describe('add tasks', function() { // jshint ignore: line
       'tasks/bar': taskConfigFactory
     })();
   });
+
+  it('should take rootTask from cliOptions if no parent is found',
+    function(done) {
+      var task = 'igel:fuchs';
+      fakeCliOptions._.push(task);
+      taskFactory = function(rootTask) {
+        expect(rootTask).to.equal(task);
+        done();
+      };
+
+      getAddTasks({
+        'tasks/bar': taskConfigFactory
+      })();
+    }
+  );
 
   it('should provide values from given child module', function(done) {
     var ipsum = {};
