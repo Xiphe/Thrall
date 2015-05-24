@@ -18,7 +18,9 @@ describe('apply task options', function() {
   }
 
   beforeEach(function() {
-    fakeCliOptions = {};
+    fakeCliOptions = {
+      _: ['']
+    };
     fakeGrunt = {
       config: {
         set: sinon.spy()
@@ -126,5 +128,21 @@ describe('apply task options', function() {
       fooValue
     );
     process.env.FOO = fooOriginal;
+  });
+
+  it('should take gruntOptions if configured', function() {
+    var configPath = 'foo.bar';
+    fakeCliOptions._[0] = 'alles:etwas:doller';
+    var options = {
+      bar: {
+        grunt: ':doller',
+        key: configPath
+      }
+    };
+    getApplyTaskOptions()(options);
+    expect(fakeGrunt.config.set).to.have.been.calledWith(
+      configPath,
+      true
+    );
   });
 });
