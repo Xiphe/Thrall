@@ -193,4 +193,26 @@ describe('task', function() { // jshint ignore: line
       'fuchs:after',
     ]);
   });
+
+  it('should pass subtasks through runFilter if present', function() {
+    taskConfig = {
+      run: ['b', 'c'],
+      runFilter: function(tasks, args) {
+        expect(args[0]).to.equal('bar');
+        tasks.unshift('a');
+        tasks.push('d');
+        return tasks;
+      }
+    };
+    getTask()('foo', taskConfig);
+    fakeGrunt.registerTask.getCall(2).args[2]('bar');
+    expect(fakeGrunt.task.run).to.have.been.calledWith([
+      'foo:before',
+      'a',
+      'b',
+      'c',
+      'd',
+      'foo:after',
+    ]);
+  });
 });
