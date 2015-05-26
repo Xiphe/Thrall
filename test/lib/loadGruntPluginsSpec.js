@@ -1,4 +1,4 @@
-describe('load grunt plugins', function() {
+describe('load grunt plugins', function() { // jshint ignore: line
   'use strict';
 
   var di = require('di');
@@ -55,6 +55,7 @@ describe('load grunt plugins', function() {
     var tasksDir = 'foo/task';
     fakeFindupSync = sinon.stub().returns(tasksDir);
     sinon.stub(fakeGrunt, 'loadTasks');
+    validThrallConfig.loadDependencies = true;
     validThrallConfig.pkg.dependencies = {
       'grunt-foo': '0.1',
       'grunt-bar': '2.1'
@@ -66,11 +67,10 @@ describe('load grunt plugins', function() {
     expect(fakeGrunt.loadTasks.callCount).to.equal(2);
   });
 
-  it('should load devDependencies if told so', function() {
+  it('should load devDependencies', function() {
     var tasksDir = 'foo/task';
     fakeFindupSync = sinon.stub().returns(tasksDir);
     sinon.stub(fakeGrunt, 'loadTasks');
-    validThrallConfig.loadDev = true;
     validThrallConfig.pkg.devDependencies = {
       'grunt-foo': '0.1',
       'grunt-bar': '2.1'
@@ -82,9 +82,23 @@ describe('load grunt plugins', function() {
     expect(fakeGrunt.loadTasks.callCount).to.equal(2);
   });
 
+  it('should not load devDependencies if false in config', function() {
+    var tasksDir = 'foo/task';
+    fakeFindupSync = sinon.stub().returns(tasksDir);
+    sinon.stub(fakeGrunt, 'loadTasks');
+    validThrallConfig.loadDevDependencies = false;
+    validThrallConfig.pkg.devDependencies = {
+      'grunt-foo': '0.1'
+    };
+
+    getLoadGruntPlugins()();
+
+    expect(fakeGrunt.loadTasks).not.to.have.been.called;
+  });
+
   it('should not import non-grunt tasks', function() {
     fakeFindupSync = sinon.stub();
-    validThrallConfig.pkg.dependencies = {
+    validThrallConfig.pkg.devDependencies = {
       'foo': '0.1'
     };
     getLoadGruntPlugins()();
@@ -94,7 +108,7 @@ describe('load grunt plugins', function() {
   it('should continue if no tasks directory is present', function() {
     fakeFindupSync = sinon.stub().returns(undefined);
     sinon.stub(fakeGrunt, 'loadTasks');
-    validThrallConfig.pkg.dependencies = {
+    validThrallConfig.pkg.devDependencies = {
       'grunt-foo': '0.1'
     };
 
