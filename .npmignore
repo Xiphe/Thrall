@@ -1,0 +1,9 @@
+.tmp/
+node_modules/
+sample_project/
+test/
+.editorconfig
+.jscsrc
+.jshintrc
+.travis.yml
+gruntfile.js
