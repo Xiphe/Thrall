@@ -80,11 +80,17 @@ function initConfig(grunt) {
       options: {
         pushTo: 'origin'
       }
+    },
+    'npm-publish': {
+      options: {
+        requires: ['test', 'shell:testSampleProject'],
+        abortIfDirty: true
+      }
     }
   });
 }
 
-function registerTasks(grunt) {
+function registerTestTasks(grunt) {
   var argv = require('minimist')(process.argv.slice(2));
 
   var runTestTask = [];
@@ -107,8 +113,22 @@ function registerTasks(grunt) {
   grunt.registerTask('test', testTask);
 }
 
+function registerReleaseTask(grunt) {
+  grunt.registerTask('release', function() {
+    grunt.task.run([
+      'jshint',
+      'jscs',
+      'test',
+      'shell:testSampleProject',
+      'bump',
+      'npm-publish'
+    ]);
+  });
+}
+
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
   initConfig(grunt);
-  registerTasks(grunt);
+  registerTestTasks(grunt);
+  registerReleaseTask(grunt);
 };
