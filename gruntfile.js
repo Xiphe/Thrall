@@ -66,6 +66,15 @@ function initConfig(grunt) {
         file: '<%= makeReport.options.dir %>lcov.info',
         token: process.env.THRALL_CODE_CLIMATE_TOKEN
       }
+    },
+    shell: {
+      testSampleProject: {
+        command: [
+          'cd ' + __dirname + '/sample_project',
+          'npm install',
+          '../node_modules/.bin/grunt test'
+        ].join(' && ')
+      }
     }
   });
 }

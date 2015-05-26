@@ -1,0 +1,25 @@
+{
+  "name": "sample_project",
+  "version": "0.0.0",
+  "description": "Test project for thrall",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Xiphe/Thrall.git"
+  },
+  "author": "Hannes Diercks <github@xiphe.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Xiphe/Thrall/issues"
+  },
+  "homepage": "https://github.com/Xiphe/Thrall",
+  "devDependencies": {
+    "grunt-karma": "^0.10.1",
+    "jasmine-core": "^2.3.4",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-jasmine": "^0.3.5"
+  }
+}
