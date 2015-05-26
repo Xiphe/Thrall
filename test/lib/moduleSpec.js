@@ -53,7 +53,7 @@ describe('module', function() {
         'thrallConfig',
         'loadGruntPlugins',
         'runningTasks',
-        'loadSubConfigs',
+        'mergeGruntPluginConfig',
         'addTasks',
         'task',
         'init'

@@ -23,9 +23,9 @@ describe('load sub configs', function() { // jshint ignore: line
     }]);
   }
 
-  function getLoadSubConfigs(proxyquireConfig) {
+  function getMergeGruntPluginConfig(proxyquireConfig) {
     return getInjector().invoke(proxyquire(
-      lib('loadSubConfigs'),
+      lib('mergeGruntPluginConfig'),
       proxyquireConfig || {}
     ));
   }
@@ -53,19 +53,19 @@ describe('load sub configs', function() { // jshint ignore: line
   });
 
   it('should export a factory', function() {
-    expect(require(lib('loadSubConfigs'))).to.be.instanceof(Function);
+    expect(require(lib('mergeGruntPluginConfig'))).to.be.instanceof(Function);
   });
 
   it('should provide a function', function() {
-    expect(getLoadSubConfigs()).to.be.instanceof(Function);
+    expect(getMergeGruntPluginConfig()).to.be.instanceof(Function);
   });
 
   it('should throw if subtask could not be loaded', function() {
     subconfigFactory = sinon.stub().throws();
 
     expect(function() {
-      getLoadSubConfigs({
-        'subtasks/foo/bar': subconfigFactory
+      getMergeGruntPluginConfig({
+        'config/foo/bar': subconfigFactory
       })(['foo:bar'], childInjector);
     }).to.throw(Error);
   });
@@ -79,9 +79,9 @@ describe('load sub configs', function() { // jshint ignore: line
     }
     fooSubconfigFactory['@noCallThru'] = true;
 
-    getLoadSubConfigs({
-      'subtasks/foo/bar': subconfigFactory,
-      'subtasks/foo': fooSubconfigFactory
+    getMergeGruntPluginConfig({
+      'config/foo/bar': subconfigFactory,
+      'config/foo': fooSubconfigFactory
     })(['foo:bar'], childInjector);
 
     expect(fakeGrunt.config.merge).to.have.been.calledWith(
@@ -92,8 +92,8 @@ describe('load sub configs', function() { // jshint ignore: line
   it('should load and merge sub configs', function() {
     sinon.stub(fakeGrunt.config, 'merge');
 
-    getLoadSubConfigs({
-      'subtasks/foo/bar': subconfigFactory
+    getMergeGruntPluginConfig({
+      'config/foo/bar': subconfigFactory
     })(['foo:bar'], childInjector);
 
     expect(fakeGrunt.config.merge).to.have.been.calledWith(
@@ -104,19 +104,19 @@ describe('load sub configs', function() { // jshint ignore: line
   it('should not load the same config twice', function() {
     sinon.stub(fakeGrunt.config, 'merge');
 
-    var loadSubConfigs = getLoadSubConfigs({
-      'subtasks/foo/bar': subconfigFactory
+    var mergeGruntPluginConfig = getMergeGruntPluginConfig({
+      'config/foo/bar': subconfigFactory
     });
 
-    loadSubConfigs(['foo:bar'], childInjector);
-    loadSubConfigs(['foo:bar']);
+    mergeGruntPluginConfig(['foo:bar'], childInjector);
+    mergeGruntPluginConfig(['foo:bar']);
 
     expect(fakeGrunt.config.merge.callCount).to.equal(1);
   });
 
   it('should not load falsely configs', function() {
     sinon.stub(fakeGrunt.config, 'merge');
-    getLoadSubConfigs()([undefined], childInjector);
+    getMergeGruntPluginConfig()([undefined], childInjector);
     expect(fakeGrunt.config.merge).not.to.have.been.called;
   });
 
@@ -130,13 +130,13 @@ describe('load sub configs', function() { // jshint ignore: line
     loremSubconfigFactory['@noCallThru'] = true;
     sinon.stub(fakeGrunt.config, 'merge');
 
-    var loadSubConfigs = getLoadSubConfigs({
-      'subtasks/watch/foo': subconfigFactory,
-      'subtasks/concurrent/bar': concurrentSubconfigFactory,
-      'subtasks/lorem/ipsum': loremSubconfigFactory
+    var mergeGruntPluginConfig = getMergeGruntPluginConfig({
+      'config/watch/foo': subconfigFactory,
+      'config/concurrent/bar': concurrentSubconfigFactory,
+      'config/lorem/ipsum': loremSubconfigFactory
     });
 
-    loadSubConfigs(['watch:foo'], childInjector);
+    mergeGruntPluginConfig(['watch:foo'], childInjector);
 
     expect(fakeGrunt.config.merge).to.have.been.calledWith(
       {lorem: {ipsum: loremSubconfig}}
@@ -146,10 +146,10 @@ describe('load sub configs', function() { // jshint ignore: line
   it('should load tasks from runIf blocks', function() {
     sinon.spy(fakeGrunt.config, 'merge');
     fakeGrunt.config.returns(true);
-    var loadSubConfigs = getLoadSubConfigs({
-      'subtasks/foo/bar': subconfigFactory
+    var mergeGruntPluginConfig = getMergeGruntPluginConfig({
+      'config/foo/bar': subconfigFactory
     });
-    loadSubConfigs([{if: 'bla', task: 'foo:bar'}], childInjector);
+    mergeGruntPluginConfig([{if: 'bla', task: 'foo:bar'}], childInjector);
     expect(fakeGrunt.config.merge).to.have.been.calledWith(
       {foo: {bar: subconfig}}
     );
@@ -157,8 +157,8 @@ describe('load sub configs', function() { // jshint ignore: line
 
   it('should check if subtask is a maintask', function() {
     sinon.spy(fakeGlob, 'sync');
-    getLoadSubConfigs({
-      'subtasks/foo/bar': subconfigFactory
+    getMergeGruntPluginConfig({
+      'config/foo/bar': subconfigFactory
     })(['foo:bar'], childInjector);
     expect(fakeGlob.sync).to.have.been.calledWith('tasks/foo/bar.+(js|coffee)');
   });
@@ -168,7 +168,7 @@ describe('load sub configs', function() { // jshint ignore: line
     function() {
       var taskname = 'foo:bar';
       sinon.stub(fakeGlob, 'sync').returns(['tasks/foo/bar.js']);
-      getLoadSubConfigs({
+      getMergeGruntPluginConfig({
         'tasks/foo/bar': subconfigFactory
       })([taskname], childInjector);
       expect(fakeAddTasks).to.have.been.calledWith([taskname]);

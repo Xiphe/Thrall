@@ -4,7 +4,7 @@ describe('task', function() { // jshint ignore: line
   var di = require('di');
   var validThrallConfig;
   var fakeGrunt;
-  var fakeLoadSubConfigs;
+  var fakeMergeGruntPluginConfig;
   var taskConfig;
   var fakeApplyTaskOptions;
   var fakeRunningTasks;
@@ -13,7 +13,7 @@ describe('task', function() { // jshint ignore: line
     return new di.Injector([{
       thrallConfig: ['value', validThrallConfig],
       grunt: ['value', fakeGrunt],
-      loadSubConfigs: ['value', fakeLoadSubConfigs],
+      mergeGruntPluginConfig: ['value', fakeMergeGruntPluginConfig],
       runningTasks: ['value', fakeRunningTasks],
       applyTaskOptions: ['value', fakeApplyTaskOptions],
       _: ['value', require('lodash')]
@@ -32,7 +32,7 @@ describe('task', function() { // jshint ignore: line
       run: ['foo:bar']
     };
     fakeApplyTaskOptions = function() {};
-    fakeLoadSubConfigs = function() {};
+    fakeMergeGruntPluginConfig = function() {};
     validThrallConfig = {};
     fakeGrunt = {
       config: function() {},
@@ -57,9 +57,9 @@ describe('task', function() { // jshint ignore: line
   });
 
   it('should load subConfigs', function() {
-    fakeLoadSubConfigs = sinon.spy();
+    fakeMergeGruntPluginConfig = sinon.spy();
     getTask()('lorem', taskConfig);
-    expect(fakeLoadSubConfigs).to.have.been.called;
+    expect(fakeMergeGruntPluginConfig).to.have.been.called;
   });
 
   it('should register the task with description', function() {
@@ -115,11 +115,14 @@ describe('task', function() { // jshint ignore: line
     fakeApplyTaskOptions = function() {
       callOrder.push('applyTaskOptions');
     };
-    fakeLoadSubConfigs = function() {
-      callOrder.push('loadSubConfigs');
+    fakeMergeGruntPluginConfig = function() {
+      callOrder.push('mergeGruntPluginConfig');
     };
     getTask()('fuchs', taskConfig);
-    expect(callOrder).to.deep.equal(['applyTaskOptions', 'loadSubConfigs']);
+    expect(callOrder).to.deep.equal([
+      'applyTaskOptions',
+      'mergeGruntPluginConfig'
+    ]);
   });
 
   it('should include or exclude tasks base on config', function() {
