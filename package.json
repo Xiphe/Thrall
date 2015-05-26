@@ -1,5 +1,5 @@
 {
-  "name": "thrall",
+  "name": "grunt-thrall",
   "version": "0.0.0",
   "description": "Grunt task orchestrator/warchief",
   "author": "Hannes Diercks <github@xiphe.net>",
