@@ -66,6 +66,22 @@ describe('register subtasks', function() {
     expect(fakeGrunt.loadTasks.callCount).to.equal(2);
   });
 
+  it('should load devDependencies if told so', function() {
+    var tasksDir = 'foo/task';
+    fakeFindupSync = sinon.stub().returns(tasksDir);
+    sinon.stub(fakeGrunt, 'loadTasks');
+    validThrallConfig.loadDev = true;
+    validThrallConfig.pkg.devDependencies = {
+      'grunt-foo': '0.1',
+      'grunt-bar': '2.1'
+    };
+
+    getRegisterSubtask()();
+
+    expect(fakeGrunt.loadTasks).to.have.been.calledWith(tasksDir);
+    expect(fakeGrunt.loadTasks.callCount).to.equal(2);
+  });
+
   it('should not import non-grunt tasks', function() {
     fakeFindupSync = sinon.stub();
     validThrallConfig.pkg.dependencies = {
