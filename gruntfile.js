@@ -114,13 +114,13 @@ function registerTestTasks(grunt) {
 }
 
 function registerReleaseTask(grunt) {
-  grunt.registerTask('release', function() {
+  grunt.registerTask('release', function(level) {
     grunt.task.run([
       'jshint',
       'jscs',
       'test',
       'shell:testSampleProject',
-      'bump',
+      'bump:' + (level || 'patch'),
       'npm-publish'
     ]);
   });
