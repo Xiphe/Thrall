@@ -75,6 +75,11 @@ function initConfig(grunt) {
           '../node_modules/.bin/grunt test'
         ].join(' && ')
       }
+    },
+    bump: {
+      options: {
+        pushTo: 'origin'
+      }
     }
   });
 }
