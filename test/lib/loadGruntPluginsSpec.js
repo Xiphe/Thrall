@@ -1,4 +1,4 @@
-describe('register subtasks', function() {
+describe('load grunt plugins', function() {
   'use strict';
 
   var di = require('di');
@@ -18,9 +18,9 @@ describe('register subtasks', function() {
     }]);
   }
 
-  function getRegisterSubtask(proxyquireConfig) {
+  function getLoadGruntPlugins(proxyquireConfig) {
     return getInjector().invoke(proxyquire(
-      lib('registerSubtasks'),
+      lib('loadGruntPlugins'),
       proxyquireConfig || {}
     ));
   }
@@ -44,11 +44,11 @@ describe('register subtasks', function() {
   });
 
   it('should export a function', function() {
-    expect(require(lib('registerSubtasks'))).to.be.instanceof(Function);
+    expect(require(lib('loadGruntPlugins'))).to.be.instanceof(Function);
   });
 
   it('should provide a function', function() {
-    expect(getRegisterSubtask()).to.be.instanceof(Function);
+    expect(getLoadGruntPlugins()).to.be.instanceof(Function);
   });
 
   it('should load tasks from package', function() {
@@ -60,7 +60,7 @@ describe('register subtasks', function() {
       'grunt-bar': '2.1'
     };
 
-    getRegisterSubtask()();
+    getLoadGruntPlugins()();
 
     expect(fakeGrunt.loadTasks).to.have.been.calledWith(tasksDir);
     expect(fakeGrunt.loadTasks.callCount).to.equal(2);
@@ -76,7 +76,7 @@ describe('register subtasks', function() {
       'grunt-bar': '2.1'
     };
 
-    getRegisterSubtask()();
+    getLoadGruntPlugins()();
 
     expect(fakeGrunt.loadTasks).to.have.been.calledWith(tasksDir);
     expect(fakeGrunt.loadTasks.callCount).to.equal(2);
@@ -87,7 +87,7 @@ describe('register subtasks', function() {
     validThrallConfig.pkg.dependencies = {
       'foo': '0.1'
     };
-    getRegisterSubtask()();
+    getLoadGruntPlugins()();
     expect(fakeFindupSync).not.to.have.been.called;
   });
 
@@ -98,7 +98,7 @@ describe('register subtasks', function() {
       'grunt-foo': '0.1'
     };
 
-    getRegisterSubtask()();
+    getLoadGruntPlugins()();
     expect(fakeGrunt.loadTasks).not.to.have.been.called;
   });
 });

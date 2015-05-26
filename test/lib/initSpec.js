@@ -10,7 +10,7 @@ describe('init', function() {
       thrallConfig: ['value', validThrallConfig],
       path: ['value', require('path')],
       grunt: ['value', fakeGrunt],
-      registerSubtasks: ['value', function() {}],
+      loadGruntPlugins: ['value', function() {}],
       addTasks: ['value', function() {}],
       baseInjector: ['value', new di.Injector([])],
       _: ['value', require('lodash')]

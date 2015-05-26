@@ -51,7 +51,7 @@ describe('module', function() {
         'applyTaskOptions',
         'baseInjector',
         'thrallConfig',
-        'registerSubtasks',
+        'loadGruntPlugins',
         'runningTasks',
         'loadSubConfigs',
         'addTasks',
