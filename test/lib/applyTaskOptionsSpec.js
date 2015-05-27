@@ -1,4 +1,4 @@
-describe('apply task options', function() {
+describe('apply task options', function() { // jshint ignore: line
   'use strict';
 
   var di = require('di');
@@ -144,5 +144,17 @@ describe('apply task options', function() {
       configPath,
       true
     );
+  });
+
+  it('should not set config when grunt key is not found', function() {
+    fakeCliOptions._[0] = 'hello:world';
+    var options = {
+      bar: {
+        grunt: ':joe',
+        key: 'foo.bar'
+      }
+    };
+    getApplyTaskOptions()(options);
+    expect(fakeGrunt.config.set).not.to.have.been.called;
   });
 });
