@@ -1,5 +1,5 @@
-Thrall (thrall-grunt)
-=====================
+grunt-thrall
+============
 
 [![Build Status](https://travis-ci.org/Xiphe/Thrall.svg?branch=master)](https://travis-ci.org/Xiphe/Thrall)
 [![Code Climate](https://codeclimate.com/github/Xiphe/Thrall/badges/gpa.svg)](https://codeclimate.com/github/Xiphe/Thrall)
@@ -33,13 +33,13 @@ Usage
 
 Install the module:
 
-`npm install thrall-grunt --save-dev`
+`npm install grunt-thrall --save-dev`
 
 
 ```js
 // gruntfile.js
 module.exports = function(grunt) {
-	var thrall = require('thrall-grunt');
+	var thrall = require('grunt-thrall');
 	
 	thrall.init({
 		/* see config */	
