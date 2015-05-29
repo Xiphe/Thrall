@@ -3,6 +3,7 @@ describe('load sub configs', function() { // jshint ignore: line
 
   var proxyquire = require('proxyquire');
   var di = require('di');
+  var grunt = require('grunt');
   var validThrallConfig;
   var fakeGrunt;
   var subconfig;
@@ -49,6 +50,7 @@ describe('load sub configs', function() { // jshint ignore: line
     fakeGlob = {
       sync: function() { return false; }
     };
+    fakeGrunt.config.get = function() { return {}; };
     fakeGrunt.config.merge = function() {};
   });
 
@@ -174,4 +176,42 @@ describe('load sub configs', function() { // jshint ignore: line
       expect(fakeAddTasks).to.have.been.calledWith([taskname]);
     }
   );
+
+  describe('with grunt', function() {
+    afterEach(function() {
+      delete grunt.config.data.lol;
+    });
+
+    it('should not overwrite configurations from user', function() {
+      fakeGrunt = grunt;
+      grunt.config.set('lol.rofl', 'awesome');
+      getMergeGruntPluginConfig({
+        'config/lol/rofl': subconfigFactory
+      })(['lol:rofl'], childInjector);
+      expect(grunt.config('lol.rofl')).to.equal('awesome');
+    });
+
+    it('should use default config if no user config present', function() {
+      fakeGrunt = grunt;
+      getMergeGruntPluginConfig({
+        'config/lol/rofl': subconfigFactory
+      })(['lol:rofl'], childInjector);
+      expect(grunt.config('lol.rofl')).to.deep.equal(subconfig);
+    });
+
+    it('should merge configurations from user', function() {
+      subconfig = {lorem: 'ipsum', hase: 'fuchs'};
+      fakeGrunt = grunt;
+      grunt.config.set('lol.rofl', {everything: 'awesome', lorem: false});
+      getMergeGruntPluginConfig({
+        'config/lol/rofl': subconfigFactory
+      })(['lol:rofl'], childInjector);
+      expect(grunt.config('lol.rofl')).to.deep.equal({
+        everything: 'awesome',
+        lorem: false,
+        hase: 'fuchs'
+      });
+    });
+  });
+
 });
