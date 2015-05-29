@@ -1,6 +1,6 @@
 {
   "name": "grunt-thrall",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Grunt task orchestrator/warchief",
   "author": "Hannes Diercks <github@xiphe.net>",
   "repository": {
